@@ -1,0 +1,15 @@
+# Source files (not needed for deployment)
+*.pdf
+*.fig
+*.sketch
+Nouveau dossier/
+
+# Notes internes
+conversation.md
+projet.md
+
+# System
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
