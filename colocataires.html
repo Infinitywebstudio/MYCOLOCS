@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trouver une colocation et un colocataire compatible — MyColoc's</title>
+  <meta name="description" content="Trouvez colocation et colocataire compatible avec MyColoc's. Étudiants, actifs, seniors : filtres, matching et conseils pour une cohabitation idéale en France." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,700;1,900&family=Caveat:wght@700&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Roboto', 'system-ui', 'sans-serif'],
+            script: ['Caveat', 'cursive'],
+          },
+          colors: {
+            'jaune-clair': '#FADF62',
+            'jaune': '#FCDD43',
+            'vert-clair': '#35583D',
+            'vert': '#143318',
+            'noir': '#222222',
+          },
+          boxShadow: {
+            soft: '0 10px 40px -15px rgba(20, 51, 24, 0.25)',
+            card: '0 8px 30px -12px rgba(20, 51, 24, 0.18)',
+          },
+          animation: {
+            'float-slow': 'float 6s ease-in-out infinite',
+            'float-slower': 'float 8s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-16px)' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Roboto', sans-serif; color: #222222; overflow-x: hidden; }
+
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity .8s ease, transform .8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .phone-frame {
+      background: #0f0f0f;
+      border-radius: 44px;
+      padding: 10px;
+      box-shadow: 0 40px 80px -30px rgba(20, 51, 24, .45), 0 0 0 2px rgba(255,255,255,.6);
+    }
+    .phone-notch {
+      position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+      width: 110px; height: 26px; background: #0f0f0f; border-radius: 0 0 18px 18px; z-index: 2;
+    }
+
+    .mark-yellow {
+      background: linear-gradient(transparent 60%, #FCDD43 60%);
+      padding: 0 4px;
+    }
+
+    .rich-text p { line-height: 1.75; margin-bottom: 1rem; color: rgba(34, 34, 34, .8); }
+    .rich-text p:last-child { margin-bottom: 0; }
+    .rich-text strong { color: #143318; font-weight: 700; }
+
+    /* FAQ accordion */
+    .faq-item[open] summary svg { transform: rotate(45deg); }
+    summary::-webkit-details-marker { display: none; }
+
+    /* Sticky nav — color adaptation + hide-on-scroll-down */
+    #nav { transition: transform .35s cubic-bezier(.4,.0,.2,1); }
+    #nav.nav-hidden { transform: translateY(calc(-100% - 24px)); }
+    #nav .nav-shell, #nav .nav-link, #nav .nav-active, #nav .nav-logo, #nav .nav-burger, #nav .nav-cta {
+      transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    #nav.scrolled .nav-shell {
+      background: rgba(255, 255, 255, .92) !important;
+      border-color: rgba(20, 51, 24, .06) !important;
+      box-shadow: 0 8px 30px -12px rgba(20, 51, 24, .18);
+    }
+    #nav.scrolled .nav-link { color: #143318 !important; }
+    #nav.scrolled .nav-link:hover { color: #143318 !important; background: rgba(252, 221, 67, .25) !important; }
+    #nav.scrolled .nav-active {
+      background: rgba(252, 221, 67, .35) !important;
+      border-color: rgba(20, 51, 24, .1) !important;
+      color: #143318 !important;
+    }
+    #nav.scrolled .nav-logo { color: #143318 !important; }
+    #nav.scrolled .nav-burger { color: #143318 !important; }
+    #nav.scrolled .nav-cta { background: #143318 !important; color: #ffffff !important; }
+    #nav.scrolled .nav-cta:hover { background: #35583D !important; }
+    #nav.scrolled .nav-mobile {
+      background: rgba(255, 255, 255, .98) !important;
+      border-color: rgba(20, 51, 24, .06) !important;
+    }
+    #nav.scrolled .nav-mobile a { color: rgba(20, 51, 24, .8) !important; }
+    #nav.scrolled .nav-mobile a.nav-active { color: #143318 !important; background: rgba(252, 221, 67, .35) !important; }
+
+    /* Album stack — Codeexp style, no rotation, with visible depth */
+    .cards-stack { position: relative; list-style: none; padding: 0; margin: 0 auto; max-width: 36rem; }
+    .card-album {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(-30px) scale(.85);
+      transform-origin: 50% 0%;
+      transition: transform .6s cubic-bezier(.8,.2,.1,.8) .1s, opacity .45s ease;
+    }
+    /* Visible back cards with progressive depth */
+    .card-album.card--back-3 { z-index: 1; opacity: .25; transform: translateY(-30px) scale(.85); }
+    .card-album.card--back-2 { z-index: 2; opacity: .45; transform: translateY(-22px) scale(.9); }
+    .card-album.card--back-1 { z-index: 3; opacity: .7;  transform: translateY(-12px) scale(.95); }
+    .card-album.card--next   { z-index: 5; opacity: 1;   transform: translateY(0) scale(1); }
+    .card-album.card--current {
+      position: relative;
+      z-index: 10;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .card-album.card--out {
+      animation: card-out .65s cubic-bezier(.8,.2,.1,.8) forwards;
+      z-index: 1;
+    }
+    @keyframes card-out {
+      0%   { z-index: 20; opacity: 1;   transform: translateY(0) translateX(0) scale(1); }
+      50%  {              opacity: .95; transform: translateY(-130%) translateX(-40px) scale(1); }
+      80%  { z-index: 1; }
+      100% {              opacity: .25; transform: translateY(-30px) translateX(0) scale(.85); }
+    }
+  </style>
+</head>
+<body class="bg-white text-noir antialiased">
+
+  <!-- ==================== NAV — Floating glass pill (Taskaroo style) ==================== -->
+  <header id="nav" class="fixed top-4 lg:top-6 inset-x-4 lg:inset-x-8 z-50">
+    <div class="nav-shell max-w-[1280px] mx-auto bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3">
+      <nav class="flex items-center justify-between gap-4">
+
+        <!-- Logo left -->
+        <a href="index.html" class="flex items-center gap-2.5 shrink-0 text-white nav-logo">
+          <img src="round-logo.png" alt="MyColoc's" class="w-9 h-9 rounded-full" />
+          <span class="font-black text-lg tracking-tight">my <span class="font-script text-jaune text-xl">coloc's</span></span>
+        </a>
+
+        <!-- Centered nav -->
+        <ul class="hidden lg:flex items-center gap-1 text-sm">
+          <li><a href="colocataires.html" class="nav-active px-4 py-3 rounded-full bg-white/10 border border-white/15 text-white font-bold">Colocataire</a></li>
+          <li><a href="proprietaires.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Propriétaire</a></li>
+          <li><a href="professionnel.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Professionnel(le)</a></li>
+          <li class="relative group">
+            <button class="nav-link flex items-center gap-1.5 px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">
+              Ville
+              <svg class="w-3.5 h-3.5 transition group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
+              <div class="bg-white text-noir rounded-2xl shadow-soft border border-black/5 p-3 grid grid-cols-2 gap-1 w-80">
+                <a href="colocation-paris.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Paris</a>
+                <a href="colocation-lyon.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Lyon</a>
+                <a href="colocation-marseille.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Marseille</a>
+                <a href="colocation-toulouse.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Toulouse</a>
+                <a href="colocation-bordeaux.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Bordeaux</a>
+                <a href="colocation-lille.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Lille</a>
+                <a href="colocation-montpellier.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Montpellier</a>
+                <a href="colocation-nantes.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Nantes</a>
+                <a href="colocation-rennes.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Rennes</a>
+                <a href="colocation-grenoble.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Grenoble</a>
+                <a href="colocation-strasbourg.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Strasbourg</a>
+                <a href="colocation-nice.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Nice</a>
+                <a href="colocation-en-france.html" class="col-span-2 mt-2 text-center py-2 rounded-lg bg-vert text-white text-sm font-medium hover:bg-vert-clair transition">Voir toutes les villes →</a>
+              </div>
+            </div>
+          </li>
+          <li><a href="avec-qui-faire-colocation.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Avec qui&nbsp;?</a></li>
+          <li><a href="a-propos.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">À propos</a></li>
+        </ul>
+
+        <!-- Right CTA -->
+        <div class="hidden lg:flex items-center shrink-0">
+          <a href="#telecharger" class="nav-cta group flex items-center gap-2 bg-white text-vert pl-5 pr-1.5 py-1.5 rounded-full text-sm font-semibold hover:bg-jaune-clair transition">
+            Télécharger l'app
+            <span class="w-8 h-8 rounded-full bg-jaune flex items-center justify-center group-hover:rotate-45 transition">
+              <svg class="w-3.5 h-3.5 text-vert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            </span>
+          </a>
+        </div>
+
+        <button id="burger" class="nav-burger lg:hidden p-2 text-white" aria-label="Menu">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </nav>
+    </div>
+
+    <div id="mobileMenu" class="nav-mobile lg:hidden hidden bg-vert/95 backdrop-blur-xl border border-white/10 rounded-2xl mt-2 mx-auto max-w-[1280px]">
+      <div class="px-4 py-4 space-y-1 text-sm font-medium">
+        <a href="colocataires.html" class="nav-active block py-2.5 px-4 rounded-full bg-white/10 text-white">Colocataire</a>
+        <a href="proprietaires.html" class="block py-2.5 px-4 text-white/85">Propriétaire</a>
+        <a href="professionnel.html" class="block py-2.5 px-4 text-white/85">Professionnel(le)</a>
+        <a href="colocation-en-france.html" class="block py-2.5 px-4 text-white/85">Ville</a>
+        <a href="avec-qui-faire-colocation.html" class="block py-2.5 px-4 text-white/85">Avec qui faire Colocation&nbsp;?</a>
+        <a href="a-propos.html" class="block py-2.5 px-4 text-white/85">À propos</a>
+        <a href="#telecharger" class="block mt-3 text-center py-3 rounded-lg bg-jaune-clair text-vert font-bold">Télécharger l'app</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO — Hole-Golf inspired ==================== -->
+  <section class="relative min-h-[88vh] lg:min-h-[94vh] flex items-end overflow-hidden pt-32 pb-12 lg:pb-16">
+    <!-- Background image -->
+    <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1920&h=1200&fit=crop" alt="Colocation" class="absolute inset-0 w-full h-full object-cover" />
+    <!-- Dark overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-vert/40 via-vert/55 to-vert/90"></div>
+
+    <!-- Floating "Matches du jour" card bottom-right -->
+    <div class="hidden lg:block absolute bottom-10 right-10 w-[340px] reveal" style="transition-delay:.2s">
+      <div class="bg-white/95 backdrop-blur-xl rounded-3xl p-3 shadow-2xl">
+        <div class="px-3 pt-2 pb-3 flex items-center gap-2 text-xs text-noir/60">
+          <svg class="w-4 h-4 text-vert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3" stroke-width="2"/></svg>
+          <span>Lyon, Croix-Rousse · 69004</span>
+        </div>
+
+        <!-- Match 1 -->
+        <div class="bg-white rounded-2xl p-3 mb-2 border border-noir/5">
+          <div class="flex items-center justify-between">
+            <div class="font-bold text-vert text-sm">Isabelle, 23</div>
+            <div class="flex items-center gap-1 text-xs text-noir/60">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Étudiant
+            </div>
+          </div>
+          <div class="mt-3 flex items-center gap-2 text-xs">
+            <span class="text-noir/50">Match</span>
+            <span class="font-bold text-vert">92%</span>
+            <span class="ml-auto bg-jaune text-vert font-bold px-2 py-0.5 rounded-full text-[11px]">⏱ 3j</span>
+            <span class="text-noir/50">Réponse</span>
+          </div>
+          <div class="mt-2 h-px bg-gradient-to-r from-transparent via-noir/10 to-transparent"></div>
+        </div>
+
+        <!-- Match 2 -->
+        <div class="bg-white rounded-2xl p-3 border border-noir/5">
+          <div class="flex items-center justify-between">
+            <div class="font-bold text-vert text-sm">Paul, 27</div>
+            <div class="flex items-center gap-1 text-xs text-noir/60">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01"/></svg>
+              Actif
+            </div>
+          </div>
+          <div class="mt-3 flex items-center gap-2 text-xs">
+            <span class="text-noir/50">Match</span>
+            <span class="font-bold text-vert">87%</span>
+            <span class="ml-auto bg-jaune text-vert font-bold px-2 py-0.5 rounded-full text-[11px]">⏱ 1j</span>
+            <span class="text-noir/50">Réponse</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero content : title + CTAs + social proof -->
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-10 w-full reveal">
+      <h1 class="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] tracking-tight text-white max-w-4xl">
+        Trouver une colocation et un <span class="italic text-jaune">colocataire compatible</span>.
+      </h1>
+
+      <p class="mt-6 text-white/85 max-w-xl text-base lg:text-lg leading-relaxed">
+        Annonces dédiées à la colocation et matching par mode de vie — trouvez le bon logement et les bonnes personnes.
+      </p>
+
+      <!-- CTAs Hole-style : pill blanc avec rond jaune -->
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <a href="#telecharger" class="group flex items-center gap-2 bg-white text-vert pl-6 pr-2 py-2 rounded-full font-semibold hover:bg-jaune-clair transition">
+          Télécharger l'app
+          <span class="w-10 h-10 rounded-full bg-jaune flex items-center justify-center group-hover:rotate-45 transition">
+            <svg class="w-4 h-4 text-vert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </span>
+        </a>
+        <a href="#fonctionnement" class="group flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/30 text-white pl-6 pr-2 py-2 rounded-full font-semibold hover:bg-white/20 transition">
+          Comment ça marche
+          <span class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </span>
+        </a>
+      </div>
+
+      <!-- Social proof bottom -->
+      <div class="mt-12 lg:mt-16 flex items-center gap-4">
+        <div class="flex -space-x-3">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop" class="w-10 h-10 rounded-full border-2 border-white object-cover" />
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop" class="w-10 h-10 rounded-full border-2 border-white object-cover" />
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop" class="w-10 h-10 rounded-full border-2 border-white object-cover" />
+          <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop" class="w-10 h-10 rounded-full border-2 border-white object-cover" />
+        </div>
+        <div class="text-white">
+          <span class="font-black text-jaune text-lg">+1 000</span>
+          <span class="text-white/80 text-sm">colocs nous font confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== H2 1 — TROUVER SA COLOCATION IDÉALE ==================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+
+      <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+
+        <!-- LEFT : image -->
+        <div class="reveal">
+          <div class="rounded-[24px] overflow-hidden aspect-[4/3] bg-noir/[0.06]">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&h=900&fit=crop" alt="Colocation idéale" class="w-full h-full object-cover" />
+          </div>
+        </div>
+
+        <!-- RIGHT : title + desc + pills -->
+        <div class="reveal space-y-6" style="transition-delay:.1s">
+          <h2 class="text-3xl lg:text-4xl font-black text-vert leading-tight">Trouver une <span class="mark-yellow">colocation</span> adaptée à votre budget, votre mode de vie et votre ville.</h2>
+          <p class="text-lg text-noir/70 leading-relaxed">
+            <strong class="text-vert">Étudiant, actif, senior ou personne âgée</strong> — l'application vous aide à trouver une colocation correspondant à vos attentes. Consultez les détails du logement, découvrez les profils des autres colocataires et postulez directement depuis l'application.
+          </p>
+          <div class="flex flex-wrap gap-2">
+            <span class="border border-vert/15 px-4 py-2 rounded-full text-sm text-vert font-medium">Budget</span>
+            <span class="border border-vert/15 px-4 py-2 rounded-full text-sm text-vert font-medium">Quartier</span>
+            <span class="border border-vert/15 px-4 py-2 rounded-full text-sm text-vert font-medium">Type de logement</span>
+            <span class="border border-vert/15 px-4 py-2 rounded-full text-sm text-vert font-medium">Durée de location</span>
+            <span class="border border-vert/15 px-4 py-2 rounded-full text-sm text-vert font-medium">Profils recherchés</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== H2 2 — TROUVER UN COLOCATAIRE QUI VOUS RESSEMBLE (Perfect Game pattern) ==================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="text-center max-w-2xl mx-auto reveal">
+        <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Compatibilité</span>
+        <h2 class="mt-4 text-3xl lg:text-5xl font-black text-vert leading-tight">Trouver un <span class="mark-yellow">colocataire</span> qui vous ressemble.</h2>
+        <p class="mt-5 text-noir/70 leading-relaxed">La réussite d'une colocation repose avant tout sur l'<strong class="text-vert">entente entre les colocataires</strong>.</p>
+      </div>
+
+      <!-- 4 cards horizontal row, image-led -->
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-5">
+
+        <article class="reveal group bg-noir/[0.04] rounded-3xl p-2.5">
+          <div class="relative rounded-2xl overflow-hidden h-[240px] bg-noir/[0.06]">
+            <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=600&h=600&fit=crop" alt="Match" class="absolute inset-0 w-full h-full object-cover" />
+            <span class="absolute top-4 left-4 bg-vert text-jaune text-[11px] font-bold px-2.5 py-1 rounded-full">Tous profils</span>
+          </div>
+          <div class="px-3 pt-4 pb-3">
+            <h3 class="text-lg font-black text-vert">Match par affinités</h3>
+            <p class="mt-1.5 text-sm text-noir/70 leading-relaxed">Mode de vie, horaires, passions et habitudes — l'algo trouve les bonnes correspondances.</p>
+          </div>
+        </article>
+
+        <article class="reveal group bg-noir/[0.04] rounded-3xl p-2.5" style="transition-delay:.08s">
+          <div class="relative rounded-2xl overflow-hidden h-[240px] bg-noir/[0.06]">
+            <img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=600&h=600&fit=crop" alt="Discussion" class="absolute inset-0 w-full h-full object-cover" />
+            <span class="absolute top-4 left-4 bg-vert text-jaune text-[11px] font-bold px-2.5 py-1 rounded-full">Avant la visite</span>
+          </div>
+          <div class="px-3 pt-4 pb-3">
+            <h3 class="text-lg font-black text-vert">Échanger en direct</h3>
+            <p class="mt-1.5 text-sm text-noir/70 leading-relaxed">Messagerie intégrée pour discuter avant même de visiter le logement.</p>
+          </div>
+        </article>
+
+        <article class="reveal group bg-noir/[0.04] rounded-3xl p-2.5" style="transition-delay:.16s">
+          <div class="relative rounded-2xl overflow-hidden h-[240px] bg-noir/[0.06]">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&h=600&fit=crop" alt="Amis" class="absolute inset-0 w-full h-full object-cover" />
+            <span class="absolute top-4 left-4 bg-vert text-jaune text-[11px] font-bold px-2.5 py-1 rounded-full">En groupe</span>
+          </div>
+          <div class="px-3 pt-4 pb-3">
+            <h3 class="text-lg font-black text-vert">Inviter vos amis</h3>
+            <p class="mt-1.5 text-sm text-noir/70 leading-relaxed">Faites-les venir sur l'app pour postuler ensemble dans la même coloc.</p>
+          </div>
+        </article>
+
+        <article class="reveal group bg-noir/[0.04] rounded-3xl p-2.5" style="transition-delay:.24s">
+          <div class="relative rounded-2xl overflow-hidden h-[240px] bg-noir/[0.06]">
+            <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&h=600&fit=crop" alt="Dossier" class="absolute inset-0 w-full h-full object-cover" />
+            <span class="absolute top-4 left-4 bg-vert text-jaune text-[11px] font-bold px-2.5 py-1 rounded-full">Dossier groupé</span>
+          </div>
+          <div class="px-3 pt-4 pb-3">
+            <h3 class="text-lg font-black text-vert">Postuler ensemble</h3>
+            <p class="mt-1.5 text-sm text-noir/70 leading-relaxed">Dossier unifié envoyé en un clic au propriétaire — plus rassurant pour tout le monde.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== H2 3-5 — PROFILS (Bento Facilities) ==================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+
+      <!-- Header split -->
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start mb-12">
+        <div class="lg:col-span-7 reveal">
+          <h2 class="text-3xl lg:text-5xl font-black text-vert leading-tight">Une coloc pour <span class="mark-yellow">chaque âge</span> de la vie.</h2>
+        </div>
+        <div class="lg:col-span-5 reveal space-y-5" style="transition-delay:.1s">
+          <p class="text-noir/70 leading-relaxed">Étudiant, actif, senior — MyColoc's s'adapte à tous les profils. Découvrez la formule qui vous correspond.</p>
+          <a href="#telecharger" class="inline-flex items-center gap-2 text-vert font-semibold border-b border-vert/40 pb-0.5 hover:gap-3 transition-all">
+            En savoir plus
+            <span class="w-2 h-2 rounded-full bg-jaune"></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Bento : 1 large + 2 small -->
+      <div class="grid lg:grid-cols-2 gap-4 lg:gap-5 lg:h-[640px]">
+
+        <!-- Étudiant (large left, full height) -->
+        <article class="reveal group relative rounded-3xl overflow-hidden bg-noir/[0.06] min-h-[420px] lg:min-h-0">
+          <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&h=1200&fit=crop" alt="Étudiants" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
+          <div class="absolute top-5 left-5">
+            <span class="bg-jaune text-vert text-[11px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">Plus populaire</span>
+          </div>
+          <a href="#telecharger" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white text-vert flex items-center justify-center group-hover:bg-jaune transition group-hover:rotate-45">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+          </a>
+          <div class="absolute bottom-0 left-0 right-0 p-7 lg:p-9 text-white">
+            <h3 class="text-2xl lg:text-3xl font-black">Colocation étudiant</h3>
+            <p class="mt-3 text-white/85 leading-relaxed text-sm lg:text-base max-w-md">Réduisez vos dépenses, vivez près de votre campus et partagez vos années d'études dans un cadre dynamique et convivial.</p>
+            <div class="mt-5 flex flex-wrap gap-2">
+              <span class="bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">Proche campus</span>
+              <span class="bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">Charges partagées</span>
+              <span class="bg-white/15 backdrop-blur border border-white/20 text-white text-xs font-medium px-3 py-1 rounded-full">Postuler entre amis</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Right column : 2 stacked cards -->
+        <div class="grid grid-rows-2 gap-4 lg:gap-5">
+
+          <!-- Actif -->
+          <article class="reveal group relative rounded-3xl overflow-hidden bg-noir/[0.06] min-h-[300px] lg:min-h-0" style="transition-delay:.1s">
+            <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&h=600&fit=crop" alt="Actifs" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
+            <a href="#telecharger" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white text-vert flex items-center justify-center group-hover:bg-jaune transition group-hover:rotate-45">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            </a>
+            <div class="absolute bottom-0 left-0 right-0 p-7 text-white">
+              <h3 class="text-xl lg:text-2xl font-black">Colocation actif</h3>
+              <p class="mt-2 text-white/80 text-sm leading-relaxed max-w-md">Optimisez votre budget tout en accédant à des quartiers centraux et à un logement plus confortable.</p>
+            </div>
+          </article>
+
+          <!-- Senior -->
+          <article class="reveal group relative rounded-3xl overflow-hidden bg-noir/[0.06] min-h-[300px] lg:min-h-0" style="transition-delay:.2s">
+            <img src="https://images.unsplash.com/photo-1581579438747-104c53d7fbc4?w=900&h=600&fit=crop" alt="Seniors" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent"></div>
+            <a href="#telecharger" class="absolute top-5 right-5 w-11 h-11 rounded-full bg-white text-vert flex items-center justify-center group-hover:bg-jaune transition group-hover:rotate-45">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            </a>
+            <div class="absolute bottom-0 left-0 right-0 p-7 text-white">
+              <h3 class="text-xl lg:text-2xl font-black">Colocation senior &amp; intergénérationnelle</h3>
+              <p class="mt-2 text-white/80 text-sm leading-relaxed max-w-md">Rompez l'isolement, partagez le quotidien et créez un environnement rassurant.</p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== H2 6 — COMMENT FONCTIONNE (stacked cards slider) ==================== -->
+  <section id="fonctionnement" class="py-20 lg:py-28 bg-noir text-white">
+    <div class="max-w-5xl mx-auto px-6 lg:px-10">
+
+      <div class="text-center max-w-2xl mx-auto reveal">
+        <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Comment ça marche</span>
+        <h2 class="mt-4 text-3xl lg:text-5xl font-black leading-tight">Comment fonctionne <span class="text-jaune">la recherche</span>&nbsp;?</h2>
+        <p class="mt-5 text-white/65 leading-relaxed">MyColoc's centralise toutes les étapes pour vous faire gagner du temps.</p>
+      </div>
+
+      <!-- Album stack — Codeexp structure -->
+      <div class="mt-16 lg:mt-20 reveal" id="stepSlider">
+        <ul class="cards-stack" id="stepStack">
+
+          <li class="card-album bg-white text-noir px-6 py-8 lg:px-10 lg:py-10 rounded-[28px] shadow-2xl flex flex-col items-center justify-center text-center min-h-[240px] lg:min-h-[260px]">
+            <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Étape 01</span>
+            <h3 class="mt-4 text-xl lg:text-2xl font-black text-vert max-w-md leading-snug">Créez votre profil</h3>
+            <p class="mt-2.5 text-sm lg:text-base text-noir/65 leading-relaxed max-w-md">Centres d'intérêt, mode de vie, préférences — en quelques minutes.</p>
+          </li>
+          <li class="card-album bg-white text-noir px-6 py-8 lg:px-10 lg:py-10 rounded-[28px] shadow-2xl flex flex-col items-center justify-center text-center min-h-[240px] lg:min-h-[260px]">
+            <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Étape 02</span>
+            <h3 class="mt-4 text-xl lg:text-2xl font-black text-vert max-w-md leading-snug">Indiquez vos critères</h3>
+            <p class="mt-2.5 text-sm lg:text-base text-noir/65 leading-relaxed max-w-md">Budget, ville, type de logement, durée — adaptez votre recherche.</p>
+          </li>
+          <li class="card-album bg-white text-noir px-6 py-8 lg:px-10 lg:py-10 rounded-[28px] shadow-2xl flex flex-col items-center justify-center text-center min-h-[240px] lg:min-h-[260px]">
+            <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Étape 03</span>
+            <h3 class="mt-4 text-xl lg:text-2xl font-black text-vert max-w-md leading-snug">Découvrez des logements et colocataires compatibles</h3>
+            <p class="mt-2.5 text-sm lg:text-base text-noir/65 leading-relaxed max-w-md">L'algorithme vous propose les meilleures correspondances.</p>
+          </li>
+          <li class="card-album bg-white text-noir px-6 py-8 lg:px-10 lg:py-10 rounded-[28px] shadow-2xl flex flex-col items-center justify-center text-center min-h-[240px] lg:min-h-[260px]">
+            <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Étape 04</span>
+            <h3 class="mt-4 text-xl lg:text-2xl font-black text-vert max-w-md leading-snug">Échangez via la messagerie</h3>
+            <p class="mt-2.5 text-sm lg:text-base text-noir/65 leading-relaxed max-w-md">Discutez en direct avec les colocs et les propriétaires.</p>
+          </li>
+          <li class="card-album bg-white text-noir px-6 py-8 lg:px-10 lg:py-10 rounded-[28px] shadow-2xl flex flex-col items-center justify-center text-center min-h-[240px] lg:min-h-[260px]">
+            <span class="inline-block bg-jaune text-vert text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">Étape 05</span>
+            <h3 class="mt-4 text-xl lg:text-2xl font-black text-vert max-w-md leading-snug">Envoyez votre dossier et finalisez votre bail</h3>
+            <p class="mt-2.5 text-sm lg:text-base text-noir/65 leading-relaxed max-w-md">Signature électronique sécurisée, directement via l'application.</p>
+          </li>
+        </ul>
+
+        <!-- Nav controls -->
+        <div class="mt-10 flex items-center justify-center gap-5">
+          <button id="prevStep" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="Étape précédente">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+
+          <div class="flex items-center gap-3 text-white/70 text-sm font-medium">
+            <span id="stepCurrent" class="text-jaune font-black text-lg">01</span>
+            <span class="text-white/30">/</span>
+            <span class="text-white/50">05</span>
+          </div>
+
+          <button id="nextStep" class="w-12 h-12 rounded-full bg-jaune hover:bg-jaune-clair text-vert flex items-center justify-center transition" aria-label="Étape suivante">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== H2 7 — FAQ ==================== -->
+  <section class="py-20 lg:py-28 bg-white">
+    <div class="max-w-4xl mx-auto px-6 lg:px-10">
+      <div class="text-center max-w-2xl mx-auto reveal">
+        <span class="font-script text-vert-clair text-3xl">Vos questions</span>
+        <h2 class="mt-2 text-3xl lg:text-4xl font-black text-vert leading-tight"><span class="mark-yellow">FAQ</span> Colocataires.</h2>
+      </div>
+
+      <div class="mt-12 space-y-3">
+
+        <details class="faq-item reveal bg-noir/[0.04] rounded-2xl p-5 lg:p-6 group" open>
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <h3 class="font-bold text-vert lg:text-lg pr-6">Comment trouver un colocataire compatible&nbsp;?</h3>
+            <svg class="w-6 h-6 text-vert shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </summary>
+          <div class="mt-4 text-noir/75 leading-relaxed">
+            <p>Pour trouver un colocataire compatible :</p>
+            <ul class="mt-2 ml-5 space-y-1 list-disc">
+              <li>Définir vos habitudes de vie et vos attentes (horaires, ménage, partage des charges…)</li>
+              <li>Vérifier les centres d'intérêt communs pour faciliter la cohabitation</li>
+              <li>Discuter avant de signer le bail pour clarifier les règles de vie</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="faq-item reveal bg-noir/[0.04] rounded-2xl p-5 lg:p-6 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <h3 class="font-bold text-vert lg:text-lg pr-6">Quels sont les critères à vérifier avant d'emménager&nbsp;?</h3>
+            <svg class="w-6 h-6 text-vert shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </summary>
+          <div class="mt-4 text-noir/75 leading-relaxed">
+            <p>Avant d'emménager dans une colocation, vérifiez :</p>
+            <ul class="mt-2 ml-5 space-y-1 list-disc">
+              <li>La sécurité du logement (normes, état général, détecteurs de fumée)</li>
+              <li>Le bail et la répartition du loyer et des charges</li>
+              <li>Les règles de vie commune (invités, animaux, ménage)</li>
+              <li>La compatibilité avec vos horaires et habitudes</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="faq-item reveal bg-noir/[0.04] rounded-2xl p-5 lg:p-6 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <h3 class="font-bold text-vert lg:text-lg pr-6">Peut-on changer de colocation facilement&nbsp;?</h3>
+            <svg class="w-6 h-6 text-vert shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </summary>
+          <div class="mt-4 text-noir/75 leading-relaxed">
+            <p>Oui, mais cela dépend du type de bail :</p>
+            <ul class="mt-2 ml-5 space-y-1 list-disc">
+              <li><strong>Colocation classique</strong> : préavis légal de 1 mois pour un meublé, 3 mois pour un non-meublé</li>
+              <li><strong>Bail à durée déterminée</strong> : respecter la durée ou négocier avec le propriétaire</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="faq-item reveal bg-noir/[0.04] rounded-2xl p-5 lg:p-6 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <h3 class="font-bold text-vert lg:text-lg pr-6">Quels sont les avantages de la colocation pour les étudiants et jeunes actifs&nbsp;?</h3>
+            <svg class="w-6 h-6 text-vert shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </summary>
+          <div class="mt-4 text-noir/75 leading-relaxed">
+            <ul class="ml-5 space-y-1 list-disc">
+              <li><strong>Réduction du loyer</strong> : partage des charges et du loyer</li>
+              <li><strong>Socialisation</strong> : vivre avec des personnes compatibles, éviter l'isolement</li>
+              <li><strong>Flexibilité</strong> : accès à des logements plus grands ou mieux situés</li>
+            </ul>
+          </div>
+        </details>
+
+        <details class="faq-item reveal bg-noir/[0.04] rounded-2xl p-5 lg:p-6 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <h3 class="font-bold text-vert lg:text-lg pr-6">Peut-on bénéficier des APL en colocation&nbsp;?</h3>
+            <svg class="w-6 h-6 text-vert shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </summary>
+          <div class="mt-4 text-noir/75 leading-relaxed">
+            <p>Oui, chaque colocataire peut demander l'<strong>APL (Aide Personnalisée au Logement)</strong> individuellement, calculée selon ses revenus et sa part du loyer.</p>
+          </div>
+        </details>
+
+        <details class="faq-item reveal bg-noir/[0.04] rounded-2xl p-5 lg:p-6 group">
+          <summary class="flex items-center justify-between cursor-pointer list-none">
+            <h3 class="font-bold text-vert lg:text-lg pr-6">Comment gérer les conflits en colocation&nbsp;?</h3>
+            <svg class="w-6 h-6 text-vert shrink-0 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          </summary>
+          <div class="mt-4 text-noir/75 leading-relaxed">
+            <ul class="ml-5 space-y-1 list-disc">
+              <li>Mettre en place un règlement intérieur clair</li>
+              <li>Communiquer régulièrement et résoudre les problèmes rapidement</li>
+              <li>Utiliser des outils de médiation si nécessaire</li>
+            </ul>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== CTA DOWNLOAD (dark Testimonials pattern) ==================== -->
+  <section id="telecharger" class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="bg-vert rounded-[40px] overflow-hidden">
+        <div class="grid lg:grid-cols-5 gap-0 items-stretch">
+
+          <!-- Image left -->
+          <div class="lg:col-span-2 relative min-h-[300px] lg:min-h-0">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&h=900&fit=crop" alt="Coloc lifestyle" class="absolute inset-0 w-full h-full object-cover" />
+          </div>
+
+          <!-- Content right -->
+          <div class="lg:col-span-3 p-8 lg:p-14 text-white flex flex-col justify-center">
+            <h2 class="text-3xl lg:text-4xl font-black leading-tight">Trouvez votre <span class="text-jaune">coloc idéale</span> en quelques minutes.</h2>
+            <p class="mt-4 text-white/70 leading-relaxed max-w-md">Créez votre profil, matchez et signez votre bail — directement depuis l'app.</p>
+
+            <div class="mt-8 flex flex-wrap items-center gap-3">
+              <a href="https://apps.apple.com/fr/app/mycolocs/id6499268960" class="group flex items-center gap-2 bg-white text-vert pl-5 pr-2 py-2 rounded-full font-semibold hover:bg-jaune-clair transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                <span class="text-sm">App Store</span>
+                <span class="w-9 h-9 rounded-full bg-jaune flex items-center justify-center group-hover:rotate-45 transition">
+                  <svg class="w-3.5 h-3.5 text-vert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+                </span>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=com.viuna.mycolocs&hl=en-US&pli=1" class="group flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-white pl-5 pr-2 py-2 rounded-full font-semibold hover:bg-white/20 transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z"/></svg>
+                <span class="text-sm">Google Play</span>
+                <span class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+                </span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-vert text-white pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+        <div>
+          <div class="flex items-center gap-3">
+            <img src="round-logo.png" class="w-11 h-11 rounded-full" alt="MyColoc's" />
+            <span class="font-black text-xl">my <span class="font-script text-jaune text-2xl">coloc's</span></span>
+          </div>
+          <p class="mt-4 text-white/70 text-sm">L'application dédiée à la colocation en France. Trouvez votre logement, vos colocataires et signez votre bail en un seul endroit.</p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm uppercase tracking-wider text-jaune">Navigation</h4>
+          <ul class="mt-4 space-y-2 text-sm text-white/80">
+            <li><a href="colocataires.html" class="hover:text-jaune transition">Colocataire</a></li>
+            <li><a href="proprietaires.html" class="hover:text-jaune transition">Propriétaire</a></li>
+            <li><a href="professionnel.html" class="hover:text-jaune transition">Professionnel(le)</a></li>
+            <li><a href="colocation-en-france.html" class="hover:text-jaune transition">Toutes les villes</a></li>
+            <li><a href="avec-qui-faire-colocation.html" class="hover:text-jaune transition">Avec qui faire Colocation&nbsp;?</a></li>
+            <li><a href="a-propos.html" class="hover:text-jaune transition">À propos</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm uppercase tracking-wider text-jaune">Profils</h4>
+          <ul class="mt-4 space-y-2 text-sm text-white/80">
+            <li><a href="#" class="hover:text-jaune transition">Étudiant</a></li>
+            <li><a href="#" class="hover:text-jaune transition">Actif</a></li>
+            <li><a href="#" class="hover:text-jaune transition">Senior</a></li>
+            <li><a href="#" class="hover:text-jaune transition">International</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm uppercase tracking-wider text-jaune">L'app</h4>
+          <div class="mt-4 flex flex-col gap-3">
+            <a href="https://apps.apple.com/fr/app/mycolocs/id6499268960" class="inline-flex items-center gap-2 text-sm text-white/80 hover:text-jaune transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+              Sur App Store
+            </a>
+            <a href="https://play.google.com/store/apps/details?id=com.viuna.mycolocs&hl=en-US&pli=1" class="inline-flex items-center gap-2 text-sm text-white/80 hover:text-jaune transition">
+              <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z"/></svg>
+              Sur Google Play
+            </a>
+          </div>
+          <div class="mt-5">
+            <div class="text-xs uppercase text-jaune font-bold mb-3">Suivez-nous</div>
+            <span class="text-xs italic text-white/50">Réseaux sociaux bientôt disponibles</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/60">
+        <div>© 2026 MyColoc's. Tous droits réservés.</div>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-jaune transition">Mentions légales</a>
+          <a href="#" class="hover:text-jaune transition">CGU</a>
+          <a href="#" class="hover:text-jaune transition">Confidentialité</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- SCRIPTS -->
+  <script>
+
+    const burger = document.getElementById('burger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    burger.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+
+    // Sticky header — color adapt + hide-on-scroll-down, reveal on scroll-up
+    const navEl = document.getElementById('nav');
+    let lastY = window.scrollY;
+    const onNavScroll = () => {
+      const y = window.scrollY;
+      // Color : glass over hero, light when past
+      if (y > 80) navEl.classList.add('scrolled');
+      else navEl.classList.remove('scrolled');
+      // Direction-aware visibility
+      if (y < 80) {
+        navEl.classList.remove('nav-hidden');
+      } else if (y > lastY + 4) {
+        navEl.classList.add('nav-hidden');
+      } else if (y < lastY - 4) {
+        navEl.classList.remove('nav-hidden');
+      }
+      lastY = y;
+    };
+    window.addEventListener('scroll', onNavScroll, { passive: true });
+    onNavScroll();
+
+    const reveals = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach((r) => io.observe(r));
+
+    // Tabs
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    tabBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        tabBtns.forEach((b) => {
+          b.classList.remove('active', 'bg-vert', 'text-white');
+          b.classList.add('text-vert', 'hover:bg-jaune/20');
+        });
+        btn.classList.add('active', 'bg-vert', 'text-white');
+        btn.classList.remove('text-vert', 'hover:bg-jaune/20');
+        tabPanels.forEach((p) => p.classList.toggle('hidden', p.dataset.panel !== target));
+      });
+    });
+
+    // FAQ - close others when one opens
+    document.querySelectorAll('.faq-item').forEach((item) => {
+      item.addEventListener('toggle', () => {
+        if (item.open) {
+          document.querySelectorAll('.faq-item').forEach((other) => {
+            if (other !== item) other.removeAttribute('open');
+          });
+        }
+      });
+    });
+
+    // Album stack — Codeexp-style with depth and prev/next arrows
+    const albumCards = document.querySelectorAll('#stepStack .card-album');
+    const stepCurrentEl = document.getElementById('stepCurrent');
+    const totalAlbum = albumCards.length;
+    let currentAlbum = 0;
+    const ALBUM_CLASSES = ['card--current', 'card--next', 'card--back-1', 'card--back-2', 'card--back-3', 'card--out'];
+
+    const applyAlbum = (newIdx, animateOut) => {
+      const oldIdx = currentAlbum;
+      albumCards.forEach(c => c.classList.remove(...ALBUM_CLASSES));
+      albumCards[newIdx].classList.add('card--current');
+
+      // Old current flies out (only on next direction or first transition)
+      if (animateOut && oldIdx !== newIdx) {
+        albumCards[oldIdx].classList.add('card--out');
+      }
+
+      // Apply depth chain to the rest, skipping the out card
+      const chain = ['card--next', 'card--back-1', 'card--back-2', 'card--back-3'];
+      let chainPos = 0;
+      for (let off = 1; off < totalAlbum && chainPos < chain.length; off++) {
+        const idx = (newIdx + off) % totalAlbum;
+        if (idx === newIdx) continue;
+        if (animateOut && idx === oldIdx) continue; // skip the out card
+        albumCards[idx].classList.add(chain[chainPos++]);
+      }
+
+      currentAlbum = newIdx;
+      stepCurrentEl.textContent = String(newIdx + 1).padStart(2, '0');
+    };
+
+    document.getElementById('prevStep').addEventListener('click', () => applyAlbum((currentAlbum - 1 + totalAlbum) % totalAlbum, true));
+    document.getElementById('nextStep').addEventListener('click', () => applyAlbum((currentAlbum + 1) % totalAlbum, true));
+    // Init
+    applyAlbum(0, false);
+  </script>
+</body>
+</html>

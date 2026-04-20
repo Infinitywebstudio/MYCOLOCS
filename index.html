@@ -90,69 +90,108 @@
     .rich-text p { line-height: 1.75; margin-bottom: 1rem; color: rgba(34, 34, 34, .8); }
     .rich-text p:last-child { margin-bottom: 0; }
     .rich-text strong { color: #143318; font-weight: 700; }
+
+    /* Sticky nav — color adaptation on scroll + hide-on-scroll-down */
+    #nav { transition: transform .35s cubic-bezier(.4,.0,.2,1); }
+    #nav.nav-hidden { transform: translateY(calc(-100% - 24px)); }
+    #nav .nav-shell, #nav .nav-link, #nav .nav-active, #nav .nav-logo, #nav .nav-burger, #nav .nav-cta {
+      transition: background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .25s ease;
+    }
+    #nav.scrolled .nav-shell {
+      background: rgba(255, 255, 255, .92) !important;
+      border-color: rgba(20, 51, 24, .06) !important;
+      box-shadow: 0 8px 30px -12px rgba(20, 51, 24, .18);
+    }
+    #nav.scrolled .nav-link { color: #143318 !important; }
+    #nav.scrolled .nav-link:hover { color: #143318 !important; background: rgba(252, 221, 67, .25) !important; }
+    #nav.scrolled .nav-active {
+      background: rgba(252, 221, 67, .35) !important;
+      border-color: rgba(20, 51, 24, .1) !important;
+      color: #143318 !important;
+    }
+    #nav.scrolled .nav-logo { color: #143318 !important; }
+    #nav.scrolled .nav-burger { color: #143318 !important; }
+    /* CTA button : invert in scrolled mode */
+    #nav.scrolled .nav-cta { background: #143318 !important; color: #ffffff !important; }
+    #nav.scrolled .nav-cta:hover { background: #35583D !important; }
+    #nav.scrolled .nav-mobile {
+      background: rgba(255, 255, 255, .98) !important;
+      border-color: rgba(20, 51, 24, .06) !important;
+    }
+    #nav.scrolled .nav-mobile a { color: rgba(20, 51, 24, .8) !important; }
+    #nav.scrolled .nav-mobile a.nav-active { color: #143318 !important; background: rgba(252, 221, 67, .35) !important; }
   </style>
 </head>
 <body class="bg-white text-noir antialiased">
 
-  <!-- ==================== NAV ==================== -->
-  <header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-6 lg:px-10">
-      <nav class="flex items-center justify-between py-4">
-        <a href="/" class="flex items-center gap-3">
-          <img src="round-logo.png" alt="MyColoc's" class="w-11 h-11 rounded-full" />
-          <span class="font-black text-xl tracking-tight text-vert">my <span class="font-script text-jaune text-2xl">coloc's</span></span>
+  <!-- ==================== NAV — Floating glass pill (Taskaroo style, always light on home) ==================== -->
+  <header id="nav" class="scrolled fixed top-4 lg:top-6 inset-x-4 lg:inset-x-8 z-50">
+    <div class="nav-shell max-w-[1280px] mx-auto bg-white/10 backdrop-blur-xl border border-white/10 rounded-2xl px-4 py-3">
+      <nav class="flex items-center justify-between gap-4">
+
+        <!-- Logo left -->
+        <a href="index.html" class="flex items-center gap-2.5 shrink-0 text-white nav-logo">
+          <img src="round-logo.png" alt="MyColoc's" class="w-9 h-9 rounded-full" />
+          <span class="font-black text-lg tracking-tight">my <span class="font-script text-jaune text-xl">coloc's</span></span>
         </a>
 
-        <ul class="hidden lg:flex items-center gap-8 text-sm font-medium text-noir/80">
-          <li><a href="/colocataires" class="hover:text-vert transition">Colocataire</a></li>
-          <li><a href="/proprietaires" class="hover:text-vert transition">Propriétaire</a></li>
-          <li><a href="/professionnel" class="hover:text-vert transition">Professionnel(le)</a></li>
+        <!-- Centered nav -->
+        <ul class="hidden lg:flex items-center gap-1 text-sm">
+          <li><a href="colocataires.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Colocataire</a></li>
+          <li><a href="proprietaires.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Propriétaire</a></li>
+          <li><a href="professionnel.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Professionnel(le)</a></li>
           <li class="relative group">
-            <button class="flex items-center gap-1 hover:text-vert transition">
+            <button class="nav-link flex items-center gap-1.5 px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">
               Ville
-              <svg class="w-4 h-4 transition group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+              <svg class="w-3.5 h-3.5 transition group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
             <div class="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-              <div class="bg-white rounded-2xl shadow-soft border border-black/5 p-3 grid grid-cols-2 gap-1 w-80">
-                <a href="/colocation-paris" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Paris</a>
-                <a href="/colocation-lyon" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Lyon</a>
-                <a href="/colocation-marseille" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Marseille</a>
-                <a href="/colocation-toulouse" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Toulouse</a>
-                <a href="/colocation-bordeaux" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Bordeaux</a>
-                <a href="/colocation-lille" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Lille</a>
-                <a href="/colocation-montpellier" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Montpellier</a>
-                <a href="/colocation-nantes" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Nantes</a>
-                <a href="/colocation-rennes" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Rennes</a>
-                <a href="/colocation-grenoble" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Grenoble</a>
-                <a href="/colocation-strasbourg" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Strasbourg</a>
-                <a href="/colocation-nice" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Nice</a>
-                <a href="/colocation-en-france" class="col-span-2 mt-2 text-center py-2 rounded-lg bg-vert text-white text-sm font-medium hover:bg-vert-clair transition">Voir toutes les villes →</a>
+              <div class="bg-white text-noir rounded-2xl shadow-soft border border-black/5 p-3 grid grid-cols-2 gap-1 w-80">
+                <a href="colocation-paris.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Paris</a>
+                <a href="colocation-lyon.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Lyon</a>
+                <a href="colocation-marseille.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Marseille</a>
+                <a href="colocation-toulouse.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Toulouse</a>
+                <a href="colocation-bordeaux.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Bordeaux</a>
+                <a href="colocation-lille.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Lille</a>
+                <a href="colocation-montpellier.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Montpellier</a>
+                <a href="colocation-nantes.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Nantes</a>
+                <a href="colocation-rennes.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Rennes</a>
+                <a href="colocation-grenoble.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Grenoble</a>
+                <a href="colocation-strasbourg.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Strasbourg</a>
+                <a href="colocation-nice.html" class="px-3 py-2 rounded-lg hover:bg-jaune/20 text-sm">Nice</a>
+                <a href="colocation-en-france.html" class="col-span-2 mt-2 text-center py-2 rounded-lg bg-vert text-white text-sm font-medium hover:bg-vert-clair transition">Voir toutes les villes →</a>
               </div>
             </div>
           </li>
-          <li><a href="/avec-qui-faire-colocation" class="hover:text-vert transition">Avec qui faire Colocation&nbsp;?</a></li>
-          <li><a href="/a-propos" class="hover:text-vert transition">À propos</a></li>
+          <li><a href="avec-qui-faire-colocation.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">Avec qui&nbsp;?</a></li>
+          <li><a href="a-propos.html" class="nav-link px-4 py-3 rounded-full text-white/85 hover:text-white hover:bg-white/5 transition">À propos</a></li>
         </ul>
 
-        <div class="hidden lg:flex items-center gap-3">
-          <a href="#telecharger" class="px-5 py-2.5 rounded-full bg-vert text-white text-sm font-medium hover:bg-vert-clair transition shadow-soft">Télécharger l'app</a>
+        <!-- Right CTA -->
+        <div class="hidden lg:flex items-center shrink-0">
+          <a href="#telecharger" class="nav-cta group flex items-center gap-2 bg-white text-vert pl-5 pr-1.5 py-1.5 rounded-full text-sm font-semibold hover:bg-jaune-clair transition">
+            Télécharger l'app
+            <span class="w-8 h-8 rounded-full bg-jaune flex items-center justify-center group-hover:rotate-45 transition">
+              <svg class="w-3.5 h-3.5 text-vert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+            </span>
+          </a>
         </div>
 
-        <button id="burger" class="lg:hidden p-2 text-vert" aria-label="Menu">
+        <button id="burger" class="nav-burger lg:hidden p-2 text-white" aria-label="Menu">
           <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
       </nav>
     </div>
 
-    <div id="mobileMenu" class="lg:hidden hidden bg-white border-t border-black/5 shadow-soft">
-      <div class="px-6 py-4 space-y-2 text-sm font-medium">
-        <a href="/colocataires" class="block py-2.5">Colocataire</a>
-        <a href="/proprietaires" class="block py-2.5">Propriétaire</a>
-        <a href="/professionnel" class="block py-2.5">Professionnel(le)</a>
-        <a href="/colocation-en-france" class="block py-2.5">Ville</a>
-        <a href="/avec-qui-faire-colocation" class="block py-2.5">Avec qui faire Colocation&nbsp;?</a>
-        <a href="/a-propos" class="block py-2.5">À propos</a>
-        <a href="#telecharger" class="block mt-3 text-center py-3 rounded-full bg-vert text-white">Télécharger l'app</a>
+    <div id="mobileMenu" class="nav-mobile lg:hidden hidden bg-vert/95 backdrop-blur-xl border border-white/10 rounded-2xl mt-2 mx-auto max-w-[1280px]">
+      <div class="px-4 py-4 space-y-1 text-sm font-medium">
+        <a href="colocataires.html" class="block py-2.5 px-4 text-white/85">Colocataire</a>
+        <a href="proprietaires.html" class="block py-2.5 px-4 text-white/85">Propriétaire</a>
+        <a href="professionnel.html" class="block py-2.5 px-4 text-white/85">Professionnel(le)</a>
+        <a href="colocation-en-france.html" class="block py-2.5 px-4 text-white/85">Ville</a>
+        <a href="avec-qui-faire-colocation.html" class="block py-2.5 px-4 text-white/85">Avec qui faire Colocation&nbsp;?</a>
+        <a href="a-propos.html" class="block py-2.5 px-4 text-white/85">À propos</a>
+        <a href="#telecharger" class="block mt-3 text-center py-3 rounded-full bg-jaune-clair text-vert font-bold">Télécharger l'app</a>
       </div>
     </div>
   </header>
@@ -310,7 +349,7 @@
       <div class="text-center max-w-2xl mx-auto reveal">
         <span class="font-script text-vert-clair text-3xl">Le bon feeling avant tout</span>
         <h2 class="mt-2 text-4xl lg:text-5xl font-black text-vert leading-tight">Trouver un <span class="mark-yellow">colocataire compatible</span>.</h2>
-        <p class="mt-5 text-noir/70">La réussite d'une colocation repose avant tout sur <strong class="text-vert">l'entente entre les colocataires</strong>. Voyez comment MyColoc's change la donne.</p>
+        <p class="mt-5 text-lg text-noir/70 leading-relaxed">La réussite d'une colocation repose avant tout sur <strong class="text-vert">l'entente entre les colocataires</strong>. Voyez comment MyColoc's change la donne.</p>
       </div>
 
       <!-- Tabs -->
@@ -484,7 +523,7 @@
           <div class="relative z-10">
             <h3 class="text-3xl lg:text-4xl font-black">Colocation vs studio</h3>
             <p class="mt-4 text-white/85 leading-relaxed max-w-md">Le studio offre de l'indépendance, mais son coût est souvent <strong class="text-jaune">plus élevé</strong>, notamment dans les grandes villes. La colocation permet d'accéder à un <strong class="text-jaune">logement plus spacieux pour un budget maîtrisé</strong>.</p>
-            <a href="/colocataires" class="mt-6 inline-flex items-center gap-2 text-jaune font-semibold border-b border-jaune/60 pb-0.5 hover:gap-3 transition-all">
+            <a href="colocataires.html" class="mt-6 inline-flex items-center gap-2 text-jaune font-semibold border-b border-jaune/60 pb-0.5 hover:gap-3 transition-all">
               En savoir plus
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
@@ -520,7 +559,7 @@
           <div class="relative z-10">
             <h3 class="text-3xl lg:text-4xl font-black text-vert">Colocation vs logement seul</h3>
             <p class="mt-4 text-vert/80 leading-relaxed max-w-md">Vivre seul implique de supporter <strong class="text-vert">l'intégralité du loyer et des charges</strong>. La colocation permet de partager ces frais tout en <strong class="text-vert">créant du lien social</strong>.</p>
-            <a href="/colocataires" class="mt-6 inline-flex items-center gap-2 text-vert font-semibold border-b border-vert/60 pb-0.5 hover:gap-3 transition-all">
+            <a href="colocataires.html" class="mt-6 inline-flex items-center gap-2 text-vert font-semibold border-b border-vert/60 pb-0.5 hover:gap-3 transition-all">
               En savoir plus
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
@@ -697,7 +736,7 @@
   </section>
 
   <!-- ==================== H2 7 — TROUVER UNE COLOCATION DANS VOTRE VILLE ==================== -->
-  <section class="py-24 lg:py-28 bg-jaune/10 relative overflow-hidden">
+  <section class="py-24 lg:py-28 relative overflow-hidden" style="background:#F3F6F7">
     <div class="max-w-7xl mx-auto px-6 lg:px-10 relative">
 
       <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 reveal">
@@ -725,7 +764,7 @@
       <div class="mt-14 reveal">
         <div id="villesCarousel" class="flex gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory pb-4 -mx-6 px-6 lg:mx-0 lg:px-0" style="scroll-behavior:smooth">
 
-          <a href="/colocation-paris" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-paris.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=600&h=800&fit=crop" alt="Paris" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -745,7 +784,7 @@
             </div>
           </a>
 
-          <a href="/colocation-lyon" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-lyon.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1524484485831-a92ffc0de03f?w=600&h=800&fit=crop" alt="Lyon" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -762,7 +801,7 @@
             </div>
           </a>
 
-          <a href="/colocation-marseille" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-marseille.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1589983544489-1a0f1c0b8b0e?w=600&h=800&fit=crop" alt="Marseille" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -779,7 +818,7 @@
             </div>
           </a>
 
-          <a href="/colocation-toulouse" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-toulouse.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=600&h=800&fit=crop" alt="Toulouse" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -796,7 +835,7 @@
             </div>
           </a>
 
-          <a href="/colocation-bordeaux" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-bordeaux.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1589634749000-1e72ec00a13f?w=600&h=800&fit=crop" alt="Bordeaux" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -816,7 +855,7 @@
             </div>
           </a>
 
-          <a href="/colocation-lille" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-lille.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1597006438013-0ae4597b4b80?w=600&h=800&fit=crop" alt="Lille" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -833,7 +872,7 @@
             </div>
           </a>
 
-          <a href="/colocation-montpellier" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-montpellier.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1603261765922-8e4c89e8e8b5?w=600&h=800&fit=crop" alt="Montpellier" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -850,7 +889,7 @@
             </div>
           </a>
 
-          <a href="/colocation-nantes" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-nantes.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1600289031464-74d374b64991?w=600&h=800&fit=crop" alt="Nantes" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -867,7 +906,7 @@
             </div>
           </a>
 
-          <a href="/colocation-rennes" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-rennes.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1588420343618-6141b3784bce?w=600&h=800&fit=crop" alt="Rennes" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -884,7 +923,7 @@
             </div>
           </a>
 
-          <a href="/colocation-grenoble" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-grenoble.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1604608672516-f1b9b1d0fa25?w=600&h=800&fit=crop" alt="Grenoble" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -901,7 +940,7 @@
             </div>
           </a>
 
-          <a href="/colocation-strasbourg" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-strasbourg.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1580646547242-b5d3f14ac85b?w=600&h=800&fit=crop" alt="Strasbourg" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -918,7 +957,7 @@
             </div>
           </a>
 
-          <a href="/colocation-nice" class="ville-card shrink-0 w-[280px] snap-start group">
+          <a href="colocation-nice.html" class="ville-card shrink-0 w-[280px] snap-start group">
             <div class="relative rounded-[24px] overflow-hidden h-[360px]">
               <img src="https://images.unsplash.com/photo-1491166617655-0723a0999cfc?w=600&h=800&fit=crop" alt="Nice" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700" />
               <div class="absolute inset-0 bg-gradient-to-t from-vert via-vert/30 to-transparent"></div>
@@ -943,7 +982,7 @@
 
       <div class="mt-14 max-w-3xl mx-auto text-center reveal">
         <p class="text-noir/70 leading-relaxed">Fini le stress de parcourir des dizaines de sites. <strong class="text-vert">MyColoc's est entièrement dédié à la colocation</strong> — chaque filtre, chaque annonce est pensé pour vous aider à trouver rapidement le logement idéal.</p>
-        <a href="/colocation-en-france" class="mt-6 inline-flex items-center gap-2 bg-vert text-white px-7 py-3.5 rounded-full font-semibold hover:bg-vert-clair transition shadow-soft">
+        <a href="colocation-en-france.html" class="mt-6 inline-flex items-center gap-2 bg-vert text-white px-7 py-3.5 rounded-full font-semibold hover:bg-vert-clair transition shadow-soft">
           Voir toutes les villes
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
@@ -1015,56 +1054,61 @@
     </div>
   </section>
 
-  <!-- ==================== H2 9 — TÉLÉCHARGER MYCOLOC'S ==================== -->
-  <section id="telecharger" class="py-24 lg:py-32 bg-white">
-    <div class="max-w-6xl mx-auto px-6 lg:px-10">
-      <div class="relative bg-vert rounded-[40px] overflow-hidden p-10 lg:p-16">
+  <!-- ==================== H2 9 — TÉLÉCHARGER MYCOLOC'S (dark card style) ==================== -->
+  <section id="telecharger" class="py-20 lg:py-28 bg-white">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="bg-noir rounded-[40px] overflow-hidden">
+        <div class="grid lg:grid-cols-12 gap-0 items-stretch">
 
-        <div class="relative grid lg:grid-cols-2 gap-10 items-center">
-          <div class="text-white">
-            <img src="round-logo.png" class="w-16 h-16 mb-6" alt="MyColoc's" />
-            <span class="font-script text-jaune text-3xl">Prêt(e) à démarrer&nbsp;?</span>
-            <h2 class="mt-1 text-4xl lg:text-5xl font-black leading-tight">Téléchargez <span class="text-jaune">MyColoc's</span>.</h2>
-            <p class="mt-5 text-white/85 leading-relaxed max-w-lg">Avec MyColoc's, trouver une colocation dans votre ville n'a jamais été aussi simple. Étudiant, actif, senior ou personne âgée, découvrez les meilleures offres adaptées à votre profil. <strong class="text-jaune">Toutes les annonces, profils et infos regroupés dans un seul outil.</strong></p>
+          <!-- Image left -->
+          <div class="lg:col-span-4 relative min-h-[280px] lg:min-h-0">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=900&h=900&fit=crop" alt="Coloc lifestyle" class="absolute inset-0 w-full h-full object-cover" />
+          </div>
 
-            <div class="mt-8 flex flex-wrap gap-4">
-              <a href="https://apps.apple.com/fr/app/mycolocs/id6499268960" class="flex items-center gap-3 bg-black hover:bg-black/80 text-white px-6 py-4 rounded-2xl transition">
-                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-                <div class="text-left">
-                  <div class="text-[10px] uppercase opacity-80">Télécharger sur</div>
-                  <div class="text-base font-semibold -mt-0.5">App Store</div>
-                </div>
+          <!-- Content middle -->
+          <div class="lg:col-span-5 p-8 lg:p-12 text-white flex flex-col justify-center">
+            <h2 class="text-3xl lg:text-4xl font-black leading-tight">Trouvez votre <span class="text-jaune">coloc idéale</span> en quelques minutes.</h2>
+            <p class="mt-4 text-white/70 leading-relaxed max-w-md">Étudiant, actif, senior — créez votre profil, matchez avec des colocataires compatibles et signez votre bail directement depuis l'app.</p>
+
+            <div class="mt-8 flex flex-wrap items-center gap-3">
+              <a href="https://apps.apple.com/fr/app/mycolocs/id6499268960" class="group flex items-center gap-2 bg-white text-vert pl-5 pr-2 py-2 rounded-full font-semibold hover:bg-jaune-clair transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                <span class="text-sm">App Store</span>
+                <span class="w-9 h-9 rounded-full bg-jaune flex items-center justify-center group-hover:rotate-45 transition">
+                  <svg class="w-3.5 h-3.5 text-vert" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+                </span>
               </a>
-              <a href="https://play.google.com/store/apps/details?id=com.viuna.mycolocs&hl=en-US&pli=1" class="flex items-center gap-3 bg-jaune hover:bg-jaune-clair text-vert px-6 py-4 rounded-2xl transition">
-                <svg class="w-8 h-8" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.198l2.807 1.626a1 1 0 010 1.73l-2.808 1.626L15.202 12l2.496-2.491zM5.864 2.658L16.802 8.99l-2.302 2.302-8.636-8.634z"/></svg>
-                <div class="text-left">
-                  <div class="text-[10px] uppercase opacity-80">Disponible sur</div>
-                  <div class="text-base font-semibold -mt-0.5">Google Play</div>
-                </div>
+              <a href="https://play.google.com/store/apps/details?id=com.viuna.mycolocs&hl=en-US&pli=1" class="group flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-white pl-5 pr-2 py-2 rounded-full font-semibold hover:bg-white/20 transition">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z"/></svg>
+                <span class="text-sm">Google Play</span>
+                <span class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center group-hover:rotate-45 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+                </span>
               </a>
             </div>
           </div>
 
-          <!-- QR Code -->
-          <div class="flex justify-center">
-            <div class="bg-white rounded-3xl p-6 shadow-soft text-center max-w-sm">
-              <div class="font-script text-vert-clair text-2xl">Scannez-moi</div>
-              <div class="mt-1 font-black text-vert">Téléchargez en un flash</div>
-              <div class="mt-5 flex justify-center">
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://apps.apple.com/fr/app/mycolocs/id6499268960&color=143318&bgcolor=ffffff&qzone=1" alt="QR code MyColoc's" class="w-52 h-52" />
+          <!-- QR card right -->
+          <div class="lg:col-span-3 p-8 lg:p-10 flex items-center justify-center">
+            <div class="bg-white/10 backdrop-blur border border-white/15 rounded-3xl p-5 text-center w-full max-w-[260px]">
+              <div class="font-bold text-white text-sm">Scannez-moi</div>
+              <div class="text-xs text-white/60 mt-0.5">Téléchargez en un flash</div>
+              <div class="mt-4 bg-white rounded-2xl p-3 flex justify-center">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https://apps.apple.com/fr/app/mycolocs/id6499268960&color=143318&bgcolor=ffffff&qzone=1" alt="QR code MyColoc's" class="w-40 h-40" />
               </div>
-              <div class="mt-5 flex items-center justify-center gap-4 text-xs text-noir/60">
-                <span class="flex items-center gap-1.5">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+              <div class="mt-3 flex items-center justify-center gap-3 text-[11px] text-white/70">
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
                   iOS
                 </span>
-                <span class="flex items-center gap-1.5">
-                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z"/></svg>
+                <span class="flex items-center gap-1">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92z"/></svg>
                   Android
                 </span>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
@@ -1085,22 +1129,22 @@
         <div>
           <h4 class="font-bold text-sm uppercase tracking-wider text-jaune">Navigation</h4>
           <ul class="mt-4 space-y-2 text-sm text-white/80">
-            <li><a href="/colocataires" class="hover:text-jaune transition">Colocataire</a></li>
-            <li><a href="/proprietaires" class="hover:text-jaune transition">Propriétaire</a></li>
-            <li><a href="/professionnel" class="hover:text-jaune transition">Professionnel(le)</a></li>
-            <li><a href="/colocation-en-france" class="hover:text-jaune transition">Toutes les villes</a></li>
-            <li><a href="/avec-qui-faire-colocation" class="hover:text-jaune transition">Avec qui faire Colocation&nbsp;?</a></li>
-            <li><a href="/a-propos" class="hover:text-jaune transition">À propos</a></li>
+            <li><a href="colocataires.html" class="hover:text-jaune transition">Colocataire</a></li>
+            <li><a href="proprietaires.html" class="hover:text-jaune transition">Propriétaire</a></li>
+            <li><a href="professionnel.html" class="hover:text-jaune transition">Professionnel(le)</a></li>
+            <li><a href="colocation-en-france.html" class="hover:text-jaune transition">Toutes les villes</a></li>
+            <li><a href="avec-qui-faire-colocation.html" class="hover:text-jaune transition">Avec qui faire Colocation&nbsp;?</a></li>
+            <li><a href="a-propos.html" class="hover:text-jaune transition">À propos</a></li>
           </ul>
         </div>
 
         <div>
           <h4 class="font-bold text-sm uppercase tracking-wider text-jaune">Profils</h4>
           <ul class="mt-4 space-y-2 text-sm text-white/80">
-            <li><a href="/colocation-etudiant" class="hover:text-jaune transition">Étudiant</a></li>
-            <li><a href="/colocation-actif" class="hover:text-jaune transition">Actif</a></li>
-            <li><a href="/colocation-senior" class="hover:text-jaune transition">Senior</a></li>
-            <li><a href="/colocation-internationale" class="hover:text-jaune transition">International</a></li>
+            <li><a href="colocation-etudiant.html" class="hover:text-jaune transition">Étudiant</a></li>
+            <li><a href="colocation-actif.html" class="hover:text-jaune transition">Actif</a></li>
+            <li><a href="colocation-senior.html" class="hover:text-jaune transition">Senior</a></li>
+            <li><a href="colocation-internationale.html" class="hover:text-jaune transition">International</a></li>
           </ul>
         </div>
 
@@ -1136,13 +1180,25 @@
 
   <!-- ==================== SCRIPTS ==================== -->
   <script>
-    const nav = document.getElementById('nav');
-    const onScroll = () => {
-      if (window.scrollY > 20) nav.classList.add('bg-white/90', 'backdrop-blur-md', 'shadow-soft');
-      else nav.classList.remove('bg-white/90', 'backdrop-blur-md', 'shadow-soft');
+    // Smart sticky nav : light by default (white hero), hide on scroll-down, reveal on scroll-up
+    const navEl = document.getElementById('nav');
+    let lastY = window.scrollY;
+    const onNavScroll = () => {
+      const y = window.scrollY;
+      // Always light on home (force scrolled)
+      navEl.classList.add('scrolled');
+      // Direction-aware visibility
+      if (y < 80) {
+        navEl.classList.remove('nav-hidden');
+      } else if (y > lastY + 4) {
+        navEl.classList.add('nav-hidden');
+      } else if (y < lastY - 4) {
+        navEl.classList.remove('nav-hidden');
+      }
+      lastY = y;
     };
-    window.addEventListener('scroll', onScroll);
-    onScroll();
+    window.addEventListener('scroll', onNavScroll, { passive: true });
+    onNavScroll();
 
     const burger = document.getElementById('burger');
     const mobileMenu = document.getElementById('mobileMenu');
